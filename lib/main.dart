@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:fingerprintauthentication/landingPage.dart';
 
 void main (){
   runApp(
     MaterialApp(
-      home: Authenticator()
+      home: LandingPage()
     )
   );
 }
@@ -62,21 +63,33 @@ class _AuthenticatorState extends State<Authenticator> {
     }
     if (!mounted) return;
 
-    setState(() {
-      if (authenticated){
-        _authorized = " Authorized";
-      }
-      else{
-        _authorized = "Not Authorized";
-      }
-    });
+    // setState(() {
+    //   if (authenticated){
+    //     Navigator.push(
+    //         context,
+    //         MaterialPageRoute(builder: (context) => LandingPage()),
+    //       );
+    //     print('SECOND TEST PASSED');
+    //     _authorized = "Authorized"
+    //   }
+    //   else{
+    //     _authorized = "Not Authorized";
+    //   }
+    // });
+
+    if (authenticated){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LandingPage()),
+      );
+    }
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('FingerPrint Authenticator'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('FingerPrint Authenticator'),
+      // ),
       body: Center(
         child: Container(
           child: Column(
