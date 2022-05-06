@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:fingerprintauthentication/landingPage.dart';
+import 'package:fingerprintauthentication/checkDetails.dart';
 
 void main (){
   runApp(
-    MaterialApp(
-      home: LandingPage()
+    const MaterialApp(
+      home:Authenticator()
     )
   );
 }
@@ -21,34 +22,7 @@ class Authenticator extends StatefulWidget {
 class _AuthenticatorState extends State<Authenticator> {
 
   LocalAuthentication auth = LocalAuthentication();
-  bool _canCheckBiometrics = false;
   List<BiometricType> _availableBiometric =[];
-  String _authorized = "Not Authorized";
-
-  Future<void> _checkBiometrics() async {
-    bool canCheckBiometrics = false;
-    try{
-    canCheckBiometrics = await auth.canCheckBiometrics;
-    } on PlatformException catch (e) {
-      print(e);
-    }
-    if (!mounted) return;
-    setState(() {
-      _canCheckBiometrics = canCheckBiometrics;
-    });
-  }
-  Future<void> _getAvailableBiometric() async {
-    List <BiometricType> availableBiometrics = [];
-    try{
-      availableBiometrics = await auth.getAvailableBiometrics();
-    } on PlatformException catch (e) {
-      print(e);
-    }
-    if (!mounted) return;
-    setState(() {
-      _availableBiometric = availableBiometrics;
-    });
-  }
 
   Future<void> _authenticate() async {
     bool authenticated = false;
@@ -63,20 +37,6 @@ class _AuthenticatorState extends State<Authenticator> {
     }
     if (!mounted) return;
 
-    // setState(() {
-    //   if (authenticated){
-    //     Navigator.push(
-    //         context,
-    //         MaterialPageRoute(builder: (context) => LandingPage()),
-    //       );
-    //     print('SECOND TEST PASSED');
-    //     _authorized = "Authorized"
-    //   }
-    //   else{
-    //     _authorized = "Not Authorized";
-    //   }
-    // });
-
     if (authenticated){
       Navigator.push(
         context,
@@ -89,26 +49,47 @@ class _AuthenticatorState extends State<Authenticator> {
     return Scaffold(
       // appBar: AppBar(
       //   title: const Text('FingerPrint Authenticator'),
-      // ),
+      // )
+      backgroundColor: Colors.black12,
       body: Center(
         child: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Can Check biometrics: $_canCheckBiometrics'),
-              ElevatedButton(
-                child: const Text('Check Biometrics'),
-                onPressed: _checkBiometrics ,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Text(
+                  '',
+                  style: TextStyle(
+                    color: Colors.grey.shade400,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30
+                  ),
+                ),
               ),
-              Text('Available Biometric: $_availableBiometric'),
-              ElevatedButton(
-                child: const Text('get available biometrics'),
-                onPressed: _getAvailableBiometric,
+              InkWell(
+                onTap: _authenticate,
+                child: const Image(
+                  image: AssetImage('assets/images/fingerprint.jpg'),
+                ),
               ),
-              Text('Current State: $_authorized \n'),
-              ElevatedButton(
-                child: const Text("Authenticate"),
-                onPressed: _authenticate,
+              InkWell(
+                onTap: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => checkDetails())
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 40),
+                  child: Text('Check Biometrics Availability',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.white,
+                      color: Colors.grey.shade400
+                    ),
+                  ),
+                ),
               )
             ],
           ),
